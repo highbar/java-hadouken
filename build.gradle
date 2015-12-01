@@ -1,0 +1,135 @@
+/**
+ * Plugins.
+ */
+apply plugin: 'checkstyle'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+/**
+ * Project information.
+ */
+archiveBaseName = '' // CHANGE: Should match the repository name
+version = new File('VERSION').text.trim()
+
+/**
+ * Project dependencies.
+ */
+dependencies {
+  // Add project-specific dependencies.
+}
+
+/**
+ * Project configuration.
+ */
+group 'com.icacarealign.insight'
+def classPath = new File('lib/classpath')
+
+clean {
+  delete classPath
+}
+
+jar {
+  manifest {
+    attributes("Implementation-Title": archivesBaseName, "Implementation-Version": version)
+  }
+}
+
+/**
+ * Checkstyle plugin configuration.
+ */
+checkstyle {
+  configFile = rootProject.file('.checkstyle.xml')
+  toolVersion = '6.7'
+}
+
+/**
+ * Jacoco plugin configuration.
+ */
+jacocoTestReport {
+  reports {
+    xml.enabled true
+  }
+}
+
+/**
+ * Maven publish plugin configuration.
+ */
+repositories {
+  mavenCentral()
+}
+
+publishing {
+  publications {
+    projectOutput(MavenPublication) {
+      from components.java
+    }
+  }
+}
+
+/**
+ * Artifactory plugin configuration.
+ */
+artifactory {
+  contextUrl = "${artifactory_contextUrl}"
+  publish {
+    repository {
+      maven = true
+      password = "${artifactory_password}"
+      repoKey = 'libs-release-local'
+      username = "${artifactory_user}"
+    }
+    defaults {
+      publications("projectOutput")
+    }
+  }
+  resolve {
+    repository {
+      maven = true
+      password = "${artifactory_password}"
+      repoKey = 'libs-release'
+      username = "${artifactory_user}"
+    }
+  }
+}
+
+buildscript {
+  dependencies {
+    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:+"
+  }
+  repositories {
+    maven {
+      credentials {
+        username = "${artifactory_user}"
+        password = "${artifactory_password}"
+      }
+      url 'https://icainformatics.artifactoryonline.com/icainformatics/libs-release'
+    }
+  }
+}
+
+/**
+ * Tasks.
+ */
+task coverage {
+  dependsOn test, jacocoTestReport
+}
+
+task distZip(type: Zip, dependsOn: assemble) {
+  into("${archivesBaseName}-${version}") {
+    from 'VERSION'
+    into('bin') { from 'bin' }
+    into('config') { from 'config' }
+    into(classPath) { from classPath }
+  }
+}
+
+task libs(type: Sync) {
+  description "Copy JAR dependencies into $classPath"
+  from configurations.compile
+  from jar
+  into classPath
+}
+
+assemble.dependsOn libs

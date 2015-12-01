@@ -1,0 +1,68 @@
+##
+# Gradle
+##
+build/
+.gradle
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+##
+# Java
+##
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.ear
+*.jar
+*.war
+
+# Virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Logs
+logs
+*.log
+*.log.lck
+
+##
+# Security
+##
+*.cer
+*.cert
+*.crl
+*.crt
+*.csr
+*.der
+*.jks
+*.key
+*.p12
+*.p7b
+*.p7r
+*.pem
+*.pfx
+*.spc
+*.sst
+*.stl
+
+##
+# Project generic
+##
+
+# Dependency and Jar output location
+lib/classpath
+
+# Environment configuration
+.env
+
+# Project configuration
+config/log4j-local.xml
+
+# Runtime data
+*.out
