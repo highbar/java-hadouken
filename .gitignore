@@ -3,6 +3,7 @@
 ##
 build/
 .gradle
+gradle.properties
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -66,3 +67,6 @@ config/log4j-local.xml
 
 # Runtime data
 *.out
+
+.idea/
+*.iml
