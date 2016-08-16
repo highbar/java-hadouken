@@ -19,9 +19,9 @@ public class SqsClientFacade implements ClientFacade {
 
   public SqsClientFacade(SqsOptions options) {
     _options = options;
-    _receiveRequest = buildReceiveRequest();
     _client = new AmazonSQSClient();
     _queueUrl = _client.getQueueUrl(_options.getQueueName()).getQueueUrl();
+    _receiveRequest = buildReceiveRequest();
   }
 
   @Override
