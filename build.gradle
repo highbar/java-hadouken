@@ -10,29 +10,27 @@ apply plugin: 'maven-publish'
 /**
  * Project information.
  */
-archiveBaseName = '' // CHANGE: Should match the repository name
 version = new File('VERSION').text.trim()
 
 /**
  * Project dependencies.
  */
 dependencies {
-  // Add project-specific dependencies.
+  compile 'com.amazonaws:aws-java-sdk-sqs:1.10.35'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+  compile 'com.fasterxml:jackson-xml-databind:0.6.2'
+  compile 'io.reactivex:rxjava:1.0.16'
+  compile 'org.slf4j:slf4j-api:1.7.13'
 }
 
 /**
  * Project configuration.
  */
-group 'com.icacarealign.insight'
-def classPath = new File('lib/classpath')
-
-clean {
-  delete classPath
-}
+group 'com.icacarealign'
 
 jar {
   manifest {
-    attributes("Implementation-Title": archivesBaseName, "Implementation-Version": version)
+    attributes("Implementation-Title": project.name, "Implementation-Version": version)
   }
 }
 
@@ -115,21 +113,3 @@ buildscript {
 task coverage {
   dependsOn test, jacocoTestReport
 }
-
-task distZip(type: Zip, dependsOn: assemble) {
-  into("${archivesBaseName}-${version}") {
-    from 'VERSION'
-    into('bin') { from 'bin' }
-    into('config') { from 'config' }
-    into(classPath) { from classPath }
-  }
-}
-
-task libs(type: Sync) {
-  description "Copy JAR dependencies into $classPath"
-  from configurations.compile
-  from jar
-  into classPath
-}
-
-assemble.dependsOn libs
