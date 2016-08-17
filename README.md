@@ -3,6 +3,9 @@
 
 ![hadouken][img]
 
+![master][master-status]
+![dev][dev-status]
+
 Hadouken for Java combines [Reactive Extensions for Java][rx] with the [AWS SDK for Java][aws-sdk] to create an observable sequence of SQS messages. Resulting application code is short and to the point.
 
 - Transform message contents before the handler fires (optional; comes with support for SNS; can be any `String` &rarr; `String` lambda)
@@ -64,6 +67,8 @@ public class Program {
 
 [aws-config]: http://docs.aws.amazon.com/AWSSdkDocsJava/latest/DeveloperGuide/credentials.html
 [aws-sdk]: https://aws.amazon.com/sdk-for-java/
+[dev-status]: https://travis-ci.org/ica-carealign/java-hadouken.svg?branch=dev
 [img]: docs/img/hadouken.png
+[master-status]: https://travis-ci.org/ica-carealign/java-hadouken.svg?branch=master
 [rx]: https://github.com/ReactiveX/RxJava
 [Shoryuken]: https://github.com/phstc/shoryuken
