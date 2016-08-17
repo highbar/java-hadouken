@@ -2,7 +2,6 @@
  * Plugins.
  */
 apply plugin: 'checkstyle'
-apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
@@ -62,47 +61,6 @@ publishing {
   publications {
     projectOutput(MavenPublication) {
       from components.java
-    }
-  }
-}
-
-/**
- * Artifactory plugin configuration.
- */
-artifactory {
-  contextUrl = "${artifactory_contextUrl}"
-  publish {
-    repository {
-      maven = true
-      password = "${artifactory_password}"
-      repoKey = 'libs-release-local'
-      username = "${artifactory_user}"
-    }
-    defaults {
-      publications("projectOutput")
-    }
-  }
-  resolve {
-    repository {
-      maven = true
-      password = "${artifactory_password}"
-      repoKey = 'libs-release'
-      username = "${artifactory_user}"
-    }
-  }
-}
-
-buildscript {
-  dependencies {
-    classpath "org.jfrog.buildinfo:build-info-extractor-gradle:+"
-  }
-  repositories {
-    maven {
-      credentials {
-        username = "${artifactory_user}"
-        password = "${artifactory_password}"
-      }
-      url 'https://icainformatics.artifactoryonline.com/icainformatics/libs-release'
     }
   }
 }
