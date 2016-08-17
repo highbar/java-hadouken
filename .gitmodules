@@ -1,3 +1,0 @@
-[submodule "tools"]
-	path = tools
-	url = ssh://git@stash.icainformatics.com:7999/cs/tools.git
