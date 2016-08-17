@@ -25,7 +25,7 @@ dependencies {
 /**
  * Project configuration.
  */
-group 'com.icacarealign'
+group 'com.ica-carealign'
 
 jar {
   manifest {

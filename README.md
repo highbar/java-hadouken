@@ -15,7 +15,7 @@ Hadouken for Java combines [Reactive Extensions for Java][rx] with the [AWS SDK 
 ### Getting Started
 
 - [Configure your environment for AWS][aws-config]
-- Add a dependency to this library: `compile 'com.icacarealign:hadouken:0.0.0'`
+- Add a dependency to this library: `compile 'com.ica-carealign:hadouken:0.0.0'`
 
 ### Usage
 
