@@ -14,6 +14,9 @@
     <property name="message" value='TODOs should be named. i.e. "TODO(johndoe): Refactor when v2 is released."'/>
   </module>
   <module name="SuppressWarningsFilter" />
+  <module name="SuppressionFilter">
+    <property name="file" value=".suppressions.xml" />
+  </module>
   <module name="TreeWalker">
     <module name="ConstantNameCheck">
       <message key="name.invalidPattern" value="Variable ''{0}'' should be in ALL_CAPS (if it is a constant) or be private (otherwise)."/>
