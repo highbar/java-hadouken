@@ -1,32 +1,28 @@
 # Hadouken
-> An AWS SQS message processor for Java. Inspired by [Shoryuken] Ruby gem.
+> An RxJava-based AWS SQS message observation library. Inspired by [Shoryuken] Ruby gem.
 
 ![hadouken][img]
 
-![master][master-status]
-![dev][dev-status]
-
 Hadouken for Java combines [Reactive Extensions for Java][rx] with the [AWS SDK for Java][aws-sdk] to create an observable sequence of SQS messages. Resulting application code is short and to the point.
 
-- Transform message contents before the handler fires (optional; comes with support for SNS; can be any `String` &rarr; `String` lambda)
+- Transform message contents before the handler fires (comes with support for SNS, but other transformers are possible by extending `ClientFacade`)
 - Handle transform and/or handler errors with custom logic
-- Automatically acknowledge messages after handler finishes successfully (can be disabled: `options.setAutoAcknowledge(false)`)
 
 ### Getting Started
 
 - [Configure your environment for AWS][aws-config]
-- Add a dependency to this library: `compile 'com.ica-carealign:hadouken:0.0.0'`
+- Add a dependency to this library: `compile 'com.highbar:hadouken:x.y.z'`
 
 ### Usage
 
 Assuming your program's parameters are pulled from environment variables, and your queue is populated through SNS with payloads like `{ "myField": "important data" }`, you can now write something like:
 
 ```java
-import hadouken.CloseableSubscription;
 import hadouken.ObservableSqs;
 import hadouken.SimpleMessage;
 import hadouken.SqsOptions;
 import hadouken.Transformers;
+import io.reactivex.disposables.Disposable;
 
 public class Program {
   public static void main(String[] args) {
@@ -41,17 +37,17 @@ public class Program {
       .setVisibilityTimeout(Integer.parseInt(System.getenv("VISIBILITY")))
       .setWaitTime(Integer.parseInt(System.getenv("WAIT")));
 
-    ObservableSqs sqs = ObservableSqs.fromOptions(options)
-      .setApplicationErrorHandler(error -> {
-        CustomLogger.logException(error); // for example
-        error.printStackTrace();
-      });
+    ObservableSqs sqs = ObservableSqs.fromOptions(options);
 
-    try (CloseableSubscription ignored = sqs.subscribe(Program::handler)) {
+    Disposable ignored = sqs.readMessages().subscribe(Program::handler)
+
+    try {
       System.out.println("Press Enter / Return to Stop");
       scanner.nextLine();
     } catch (IOException error) {
       error.printStackTrace();
+    } finally {
+      ignored.dispose();
     }
   }
 
@@ -67,8 +63,6 @@ public class Program {
 
 [aws-config]: http://docs.aws.amazon.com/AWSSdkDocsJava/latest/DeveloperGuide/credentials.html
 [aws-sdk]: https://aws.amazon.com/sdk-for-java/
-[dev-status]: https://travis-ci.org/ica-carealign/java-hadouken.svg?branch=dev
 [img]: docs/img/hadouken.png
-[master-status]: https://travis-ci.org/ica-carealign/java-hadouken.svg?branch=master
 [rx]: https://github.com/ReactiveX/RxJava
 [Shoryuken]: https://github.com/phstc/shoryuken

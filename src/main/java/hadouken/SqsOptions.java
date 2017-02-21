@@ -1,21 +1,21 @@
 package hadouken;
 
+import java.util.Optional;
 import java.util.function.Predicate;
+
+import io.reactivex.functions.Function;
 
 /**
  * Encapsulates options used to connect to SQS.
  */
 public class SqsOptions {
   private int _maxMessages;
-  private String _queueName;
   private int _visibilityTimeout;
   private int _waitTime;
-  private VolatileTransformer _transformer;
-  private boolean _autoAcknowledge;
   private Predicate<SimpleMessage> _filter;
+  private String _queueName;
 
   public SqsOptions() {
-    _autoAcknowledge = true;
     _maxMessages = 10;
     _visibilityTimeout = 30;
     _waitTime = 0;
@@ -25,8 +25,13 @@ public class SqsOptions {
     return _maxMessages;
   }
 
-  public SqsOptions setMaxMessages(int maxMessages) {
+  public SqsOptions setMaxMessages(final int maxMessages) {
+    if (maxMessages < 1) {
+      throw new IllegalArgumentException("maxMessages must be greater than zero");
+    }
+
     _maxMessages = maxMessages;
+
     return this;
   }
 
@@ -34,8 +39,9 @@ public class SqsOptions {
     return _queueName;
   }
 
-  public SqsOptions setQueueName(String queueName) {
+  public SqsOptions setQueueName(final String queueName) {
     _queueName = queueName;
+
     return this;
   }
 
@@ -43,8 +49,13 @@ public class SqsOptions {
     return _visibilityTimeout;
   }
 
-  public SqsOptions setVisibilityTimeout(int visibilityTimeout) {
+  public SqsOptions setVisibilityTimeout(final int visibilityTimeout) {
+    if (visibilityTimeout <= 0) {
+      throw new IllegalArgumentException("visibilityTimeout must be greater than zero");
+    }
+
     _visibilityTimeout = visibilityTimeout;
+
     return this;
   }
 
@@ -52,35 +63,24 @@ public class SqsOptions {
     return _waitTime;
   }
 
-  public SqsOptions setWaitTime(int waitTime) {
+  public SqsOptions setWaitTime(final int waitTime) {
+    if (waitTime <= 0) {
+      throw new IllegalArgumentException("waitTime must be greater than zero");
+    }
+
     _waitTime = waitTime;
-    return this;
-  }
 
-  public VolatileTransformer getTransformer() {
-    return _transformer != null ? _transformer : Transformers.NONE;
-  }
-
-  public SqsOptions setTransformer(VolatileTransformer transformer) {
-    _transformer = transformer;
-    return this;
-  }
-
-  public boolean shouldAutoAcknowledge() {
-    return _autoAcknowledge;
-  }
-
-  public SqsOptions setAutoAcknowledge(boolean autoAcknowledge) {
-    _autoAcknowledge = autoAcknowledge;
     return this;
   }
 
   public Predicate<SimpleMessage> getFilter() {
-    return _filter != null ? _filter : Filters.HAS_CONTENT;
+    return Optional.ofNullable(_filter)
+      .orElse(Filters.HAS_CONTENT);
   }
 
-  public SqsOptions setFilter(Predicate<SimpleMessage> filter) {
+  public SqsOptions setFilter(final Predicate<SimpleMessage> filter) {
     _filter = filter;
+
     return this;
   }
 }
